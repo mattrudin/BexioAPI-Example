@@ -18,15 +18,35 @@ class Bexio {
         this.data.scopes = scopes;
     }
 
+    goLogin= () => {
+        this.timerID = setInterval(() => this.getAccess(), 1000);
+        const http = new XMLHttpRequest();
+        const url = 'https://office.bexio.com/oauth/authorize';
+        const state = this.generateState();
+
+        const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&state=${state}&scope=${this.data.scopes}`;
+
+        http.open('GET', url, true);
+
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        http.onreadystatechange = () => {
+            if (http.readyState === 4 && http.status === 200) {
+            window.location = `${url}?${params}`;
+            }
+        };
+        http.send(params);
+    }
+
     getAccess() {
         const isCode = window.location.href.match(/code=([^&]*)/);
         if (isCode) {
           const state = window.location.href.match(/state=([^&]*)/)[1];
-          if(this.data.state === state) {
+          /* if(this.data.state === state) { */
           clearInterval(this.timerID);
           const code = isCode[1];
           this.getAccessToken(code);
-          }
+         /*  } */
         }
       }
     
@@ -54,24 +74,6 @@ class Bexio {
         http.send(params);
     }
 
-    goLogin= () => {
-        const http = new XMLHttpRequest();
-        const url = 'https://office.bexio.com/oauth/authorize';
-        const state = this.generateState();
-
-        const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&state=${state}&scope=${this.data.scopes}`;
-
-        http.open('GET', url, true);
-
-        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-        http.onreadystatechange = () => {
-            if (http.readyState === 4 && http.status === 200) {
-            window.location = `${url}?${params}`;
-            }
-        };
-        http.send(params);
-    }
 
     generateState() {
         const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -83,4 +85,24 @@ class Bexio {
         return randomState;
     }
     
+    getUsers = () => {
+        const { accessToken, organisation } = this.data;
+        const http = new XMLHttpRequest();
+        const baseUrl = 'https://office.bexio.com/api2.php/';
+        const url = `${baseUrl}${organisation}/user`;
+        http.open('GET', url, true);
+        http.setRequestHeader('Accept', 'application/json');
+        http.setRequestHeader('Authorization', `Bearer ${accessToken}`);
+    
+        http.onreadystatechange = () => {
+          if (http.readyState === 4 && http.status === 200) {
+            const users = JSON.parse(http.responseText);
+            this.data.users({
+              users,
+            });
+          }
+        };
+    
+        http.send();
+    }
 }
