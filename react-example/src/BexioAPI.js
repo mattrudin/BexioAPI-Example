@@ -9,10 +9,11 @@ class BexioAPI {
         }
     }
 
+    //callback = setInterval(console.log('hello'), 1000);
     callback = () => {
         setInterval(() => this.getAccess(), 1000);
     }
-    
+
     goLogin = () => {
         // no 'access-control-allow-origin' header is present on the requested resource.
         const baseUrl = 'https://office.bexio.com/oauth/authorize?';
@@ -21,17 +22,6 @@ class BexioAPI {
         const url = `${baseUrl}${params}`;
 
         window.location = `${url}`;
-
-        //the following may be needed for CORS issues
-        /* const reqHeader = new Headers({
-            'Content-type': 'application/x-www-form-urlencoded',
-        });
-        const initObject = {
-            method: 'GET', headers: reqHeader,
-        };
-
-        fetch(url, initObject); */
-
     }
 
     getAccess = () => {
@@ -44,7 +34,7 @@ class BexioAPI {
         }
       }
 
-    getAccessToken(code) {
+    getAccessToken = (code) => {
         const baseUrl = 'https://office.bexio.com/oauth/access_token?';
         const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&client_secret=${this.data.clientSecret}&code=${code}`;
         const url = `${baseUrl}${params}`;
@@ -118,6 +108,12 @@ class BexioAPI {
                 return resourceText = 'pr_project';
             case 'articles':
                 return resourceText = 'article';
+            case 'tasks':
+                return resourceText = 'task';
+            case 'contacts':
+                return resourceText = 'contact';
+            case 'business activities':
+                return resourceText = 'client_service';
             default:
                 alert('Unknown method');
         }
