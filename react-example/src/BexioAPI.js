@@ -1,24 +1,17 @@
-class Bexio {
-    constructor({clientID, clientSecret}) {
+class BexioAPI {
+    constructor({clientID, clientSecret, redirectURI, scopes}) {
         this.data = {
             clientID: clientID,
             clientSecret: clientSecret,
-            redirectURI: 'http://localhost:3000/',
-            scopes: 'article_show monitoring_show project_show',
+            redirectURI: redirectURI,
+            scopes: scopes,
             state: '',
             accessToken: '',
             organisation: ''
         }
     }
 
-    configure({clientID, clientSecret, redirectURI, scopes}) {
-        this.data.clientID = clientID;
-        this.data.clientSecret = clientSecret;
-        this.data.redirectURI = redirectURI;
-        this.data.scopes = scopes;
-    }
-
-    timerInterval = () => {
+    callback = () => {
         setInterval(() => this.getAccess(), 1000);
     }
     
@@ -26,13 +19,10 @@ class Bexio {
         const http = new XMLHttpRequest();
         const url = 'https://office.bexio.com/oauth/authorize';
         const state = this.generateState();
-
         const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&state=${state}&scope=${this.data.scopes}`;
 
         http.open('GET', url, true);
-
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
         http.onreadystatechange = () => {
             if (http.readyState === 4 && http.status === 200) {
             window.location = `${url}?${params}`;
@@ -41,12 +31,11 @@ class Bexio {
         http.send(params);
     }
 
-    getAccess() {
-        console.log('I am running in the background!')
+    getAccess = () => {
         const isCode = window.location.href.match(/code=([^&]*)/);
         if (isCode) {
           //const state = window.location.href.match(/state=([^&]*)/)[1];
-          clearInterval(this.timerInterval); //does not work
+          clearInterval(this.callback); //does not work
           const code = isCode[1];
           this.getAccessToken(code);
         }
@@ -57,12 +46,10 @@ class Bexio {
 
         const http = new XMLHttpRequest();
         const url = 'https://office.bexio.com/oauth/access_token/';
-
         const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&client_secret=${this.data.clientSecret}&code=${code}`;
+        
         http.open('POST', url, true);
-
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
         http.onreadystatechange = () => {
             if (http.readyState === 4 && http.status === 200) {
             const json = JSON.parse(http.responseText);
@@ -86,27 +73,51 @@ class Bexio {
         this.data.state = randomState;
         return randomState;
     }
-    
-    getUsers = () => {
+
+    getData = (resource) => {
         const { accessToken, organisation } = this.data;
-        const http = new XMLHttpRequest();
         const baseUrl = 'https://office.bexio.com/api2.php/';
-        const url = `${baseUrl}${organisation}/user`;
-        http.open('GET', url, true);
-        http.setRequestHeader('Accept', 'application/json');
-        http.setRequestHeader('Authorization', `Bearer ${accessToken}`);
-    
-        http.onreadystatechange = () => {
-          if (http.readyState === 4 && http.status === 200) {
-            const users = JSON.parse(http.responseText);
-            this.data.users({
-              users,
-            });
-          }
+        const resourceText = this.resourceReducer(resource);
+        const url = `${baseUrl}${organisation}/${resourceText}`;
+        console.log(url);
+        const reqHeader = new Headers({
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        });
+        const initObject = {
+            method: 'GET', headers: reqHeader,
         };
-    
-        http.send();
+
+        fetch(url, initObject)
+            .then( response => {
+                return response.json();
+            })
+            .then( receivedData => {
+                this.data[resource] = {
+                    ...receivedData
+                  };
+            })
+            .catch(function (err) {
+                console.log("Something went wrong!", err);
+            });
+    }
+
+    resourceReducer(resource) {
+        let resourceText;
+        switch(resource) {
+            //case descriptions are according resources page, name column --> https://docs.bexio.com/resources/
+            case 'users':
+                return resourceText = 'user';
+            case 'timesheets':
+                return resourceText = 'timesheet';
+            case 'projects':
+                return resourceText = 'pr_project';
+            case 'articles':
+                return resourceText = 'article';
+            default:
+                alert('Unknown method');
+        }
     }
 }
 
-export default Bexio;
+export default BexioAPI;
