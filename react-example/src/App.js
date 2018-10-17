@@ -3,8 +3,8 @@ import './App.css';
 import BexioAPI from './BexioAPI';
 
 const config = {
-  clientID: 'XXXXXXXXXXXXXXXXXXXX',
-  clientSecret: 'XXXXXXXXXXXXXXXXXXXX',
+  clientID: 'XXXXXXXXXXXXXXXXXXXXXXXXX',
+  clientSecret: 'XXXXXXXXXXXXXXXXXXXXXXXXX',
   redirectURI: 'http://localhost:3000/',
   scopes: 'article_show monitoring_show project_show'
 }
