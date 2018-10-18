@@ -19,8 +19,9 @@ class BexioAPI {
     goLogin = () => {
         // no 'access-control-allow-origin' header is present on the requested resource.
         const baseUrl = 'https://office.bexio.com/oauth/authorize?';
-        const state = this.generateState();
-        const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&state=${state}&scope=${this.data.scopes}`;
+        this.data.state = this.generateState();
+        localStorage.setItem('state', this.data.state);
+        const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&state=${this.data.state}&scope=${this.data.scopes}`;
         const url = `${baseUrl}${params}`;
 
         window.location = `${url}`;
@@ -29,11 +30,14 @@ class BexioAPI {
     getAccess = () => {
         const isCode = window.location.href.match(/code=([^&]*)/);
         if (isCode) {
-          //const state = window.location.href.match(/state=([^&]*)/)[1];
-          SetInterval.clear('callback');
-          //clearInterval(this.callback); //does not work
-          const code = isCode[1];
-          this.getAccessToken(code);
+            SetInterval.clear('callback');
+            const stateReceived = window.location.href.match(/state=([^&]*)/)[1];
+            const stateSent = localStorage.getItem('state');
+            if(stateReceived === stateSent) {
+                localStorage.clear();
+                const code = isCode[1];
+                this.getAccessToken(code);
+            }
         }
       }
 
