@@ -7,31 +7,24 @@ class BexioAPI {
             clientSecret: clientSecret,
             redirectURI: redirectURI,
             scopes: scopes,
-            state: '',
-            accessToken: '',
-            organisation: ''
+            state: ''
         }
     }
 
+    //callback = setInterval(console.log('hello'), 1000);
     callback = () => {
         SetInterval.start(this.getAccess, 1000,'callback');
     }
-    
+
     goLogin = () => {
-        const http = new XMLHttpRequest();
-        const url = 'https://office.bexio.com/oauth/authorize';
+        // no 'access-control-allow-origin' header is present on the requested resource.
+        const baseUrl = 'https://office.bexio.com/oauth/authorize?';
         this.data.state = this.generateState();
         localStorage.setItem('state', this.data.state);
         const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&state=${this.data.state}&scope=${this.data.scopes}`;
+        const url = `${baseUrl}${params}`;
 
-        http.open('GET', url, true);
-        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        http.onreadystatechange = () => {
-            if (http.readyState === 4 && http.status === 200) {
-            window.location = `${url}?${params}`;
-            }
-        };
-        http.send(params);
+        window.location = `${url}`;
     }
 
     getAccess = () => {
@@ -47,29 +40,31 @@ class BexioAPI {
             }
         }
       }
-    
-    getAccessToken(code) {
-        // no 'access-control-allow-origin' header is present on the requested resource.
 
-        const http = new XMLHttpRequest();
-        const url = 'https://office.bexio.com/oauth/access_token/';
+    getAccessToken = (code) => {
+        const baseUrl = 'https://office.bexio.com/oauth/access_token?';
         const params = `client_id=${this.data.clientID}&redirect_uri=${this.data.redirectURI}&client_secret=${this.data.clientSecret}&code=${code}`;
-        
-        http.open('POST', url, true);
-        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        http.onreadystatechange = () => {
-            if (http.readyState === 4 && http.status === 200) {
-            const json = JSON.parse(http.responseText);
-            const accessToken = json.access_token;
-            const organisation = json.org;
-            this.data.accessToken = accessToken;
-            this.data.organisation = organisation;
-            alert('AccessToken successfully received');
-            }
+        const url = `${baseUrl}${params}`;
+        const reqHeader = new Headers({
+            'Content-type': 'application/x-www-form-urlencoded',
+        });
+        const initObject = {
+            method: 'POST', headers: reqHeader,
         };
-        http.send(params);
-    }
 
+        fetch(url, initObject)
+            .then( response => {
+                return response.json();
+            })
+            .then( receivedData => {
+                this.data.accessToken = receivedData.access_token;
+                this.data.organisation = receivedData.org;
+                alert('AccessToken successfully received');
+            })
+            .catch(function (err) {
+                console.log("Something went wrong!", err);
+            });
+    }
 
     generateState() {
         const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -86,7 +81,6 @@ class BexioAPI {
         const baseUrl = 'https://office.bexio.com/api2.php/';
         const resourceText = this.resourceReducer(resource);
         const url = `${baseUrl}${organisation}/${resourceText}`;
-        console.log(url);
         const reqHeader = new Headers({
             'Accept': 'application/json',
             'Authorization': `Bearer ${accessToken}`
@@ -121,6 +115,12 @@ class BexioAPI {
                 return resourceText = 'pr_project';
             case 'articles':
                 return resourceText = 'article';
+            case 'tasks':
+                return resourceText = 'task';
+            case 'contacts':
+                return resourceText = 'contact';
+            case 'business activities':
+                return resourceText = 'client_service';
             default:
                 alert('Unknown method');
         }
