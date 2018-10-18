@@ -1,3 +1,5 @@
+import SetInterval from 'set-interval';
+
 class BexioAPI {
     constructor({clientID, clientSecret, redirectURI, scopes}) {
         this.data = {
@@ -12,7 +14,7 @@ class BexioAPI {
     }
 
     callback = () => {
-        setInterval(() => this.getAccess(), 1000);
+        SetInterval.start(this.getAccess, 1000,'callback');
     }
     
     goLogin = () => {
@@ -35,7 +37,8 @@ class BexioAPI {
         const isCode = window.location.href.match(/code=([^&]*)/);
         if (isCode) {
           //const state = window.location.href.match(/state=([^&]*)/)[1];
-          clearInterval(this.callback); //does not work
+          SetInterval.clear('callback');
+          //clearInterval(this.callback); //does not work
           const code = isCode[1];
           this.getAccessToken(code);
         }

@@ -8,8 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
     <script src="BexioAPI.js">
-        //import BexioAPI from './BexioAPI';
-
         const config = {
             clientID: 'XXXXXXXXXXXXXXXXXXXX',
             clientSecret: 'XXXXXXXXXXXXXXXXXXXX',
@@ -18,7 +16,7 @@
         }
 
         const Bexio = new BexioAPI(config); //please use this name convention as best practice
-
+        Bexio.callback();
 
     </script>
 </head>
