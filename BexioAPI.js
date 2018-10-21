@@ -16,7 +16,7 @@ class BexioAPI {
         SetInterval.start(this.getAccess, 1000,'callback');
     }
 
-    goLogin = () => {
+    login = () => {
         // no 'access-control-allow-origin' header is present on the requested resource.
         const baseUrl = 'https://office.bexio.com/oauth/authorize?';
         this.data.state = generateState();
@@ -62,11 +62,12 @@ class BexioAPI {
                 alert('AccessToken successfully received');
             })
             .catch(err => {
-                alert("Something went wrong!", err);
+                alert("Error: Could not retrive data!", err);
             });
     }
 
     getData = (resource) => {
+        const data = [];
         if (typeof resource === 'string') {
             const { accessToken, organisation } = this.data;
             const baseUrl = 'https://office.bexio.com/api2.php/';
@@ -85,23 +86,30 @@ class BexioAPI {
                     return response.json();
                 })
                 .then( receivedData => {
-                    this.data[resource] = {
-                        ...receivedData
-                      };
+                    data = [...receivedData];
                 })
                 .catch(err => {
-                    alert("Something went wrong!", err);
+                    alert("Error: Could not retrive data!", err);
                 });
         } else {
-            alert('Please provide a string into this function.')
+            alert('Error: Please provide a string into this function.')
         }
+        return data ? data : alert('Error: Data was not received.')
     }
 
-    setData = (resource) => {
+    postData = (resource) => {
         if (typeof resource === 'string') {
             //POST data
         } else {
-            alert('Please provide a string into this function.')
+            alert('Error: Please provide a string into this function.')
+        }
+    }
+
+    postTimetracking = (resource) => { 
+        if (typeof resource === 'string') {
+            //POST data
+        } else {
+            alert('Error: Please provide a string into this function.')
         }
     }
 }
