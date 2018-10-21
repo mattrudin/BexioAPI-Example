@@ -1,5 +1,5 @@
 import SetInterval from 'set-interval';
-import { generateState, resourceReducer } from './utilities';
+import { generateState, resourceReducer, stringifyTimetrackings } from './utilities';
 
 class BexioAPI {
     constructor({clientID, clientSecret, redirectURI, scopes}) {
@@ -16,7 +16,7 @@ class BexioAPI {
         SetInterval.start(this.getAccess, 1000,'callback');
     }
 
-    goLogin = () => {
+    login = () => {
         // no 'access-control-allow-origin' header is present on the requested resource.
         const baseUrl = 'https://office.bexio.com/oauth/authorize?';
         this.data.state = generateState();
@@ -62,11 +62,12 @@ class BexioAPI {
                 alert('AccessToken successfully received');
             })
             .catch(err => {
-                alert("Something went wrong!", err);
+                alert("Error: Could not retrive data!", err);
             });
     }
 
     getData = (resource) => {
+        const data = [];
         if (typeof resource === 'string') {
             const { accessToken, organisation } = this.data;
             const baseUrl = 'https://office.bexio.com/api2.php/';
@@ -85,24 +86,46 @@ class BexioAPI {
                     return response.json();
                 })
                 .then( receivedData => {
-                    this.data[resource] = {
-                        ...receivedData
-                      };
+                    data = [...receivedData];
                 })
                 .catch(err => {
-                    alert("Something went wrong!", err);
+                    alert("Error: Could not retrive data!", err);
                 });
         } else {
-            alert('Please provide a string into this function.')
+            alert('Error: Please provide a string into this function.')
         }
+        return data ? data : alert('Error: Data was not received.')
     }
 
-    setData = (resource) => {
+    postData = (resource) => {
         if (typeof resource === 'string') {
             //POST data
         } else {
-            alert('Please provide a string into this function.')
+            alert('Error: Please provide a string into this function.')
         }
+    }
+
+    postTimetracking = (timesheets) => { //resource is hardcoded as "timesheet"; scope: monitoring_edit
+        const { accessToken, organisation } = this.data;
+        const baseUrl = 'https://office.bexio.com/api2.php/';
+        const url = `${baseUrl}${organisation}/timesheet`;
+        const reqHeader = new Headers({
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        });
+        //new function: check if timesheets are according specification
+        const data = stringifyTimetrackings(timesheets);
+        const initObject = {
+            method: 'POST', body: data, headers: reqHeader
+        };
+
+        fetch(url, initObject)
+            .then( response => {
+                return alert('Timesheets successfully uploaded!', response.json());
+            })
+            .catch(err => {
+                alert("Error: Could not send data!", err);
+            });
     }
 }
 

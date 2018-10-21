@@ -2,6 +2,7 @@
 
 # dependencies
 /react-example/node_modules
+/react-example/.cache
 
 # testing
 /react-example/coverage
