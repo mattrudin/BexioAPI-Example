@@ -1,5 +1,5 @@
 import SetInterval from 'set-interval';
-import { generateState, resourceReducer } from './utilities';
+import { generateState, resourceReducer, stringifyTimetrackings } from './utilities';
 
 class BexioAPI {
     constructor({clientID, clientSecret, redirectURI, scopes}) {
@@ -105,11 +105,7 @@ class BexioAPI {
         }
     }
 
-    collectTimetrackings(...timesheets) {
-        //for fututre use: collects all timetrackings and converts it into a json object
-    }
-
-    postTimetracking = (userID, prProjectID, clientServiceID, duration) => { //resource is hardcoded as "timesheet"; scope: monitoring_edit
+    postTimetracking = (timesheets) => { //resource is hardcoded as "timesheet"; scope: monitoring_edit
         const { accessToken, organisation } = this.data;
         const baseUrl = 'https://office.bexio.com/api2.php/';
         const url = `${baseUrl}${organisation}/timesheet`;
@@ -117,25 +113,10 @@ class BexioAPI {
             'Accept': 'application/json',
             'Authorization': `Bearer ${accessToken}`
         });
-        
-        //for development: single pre JSON
-        const preJSON = {
-            user_id: userID,
-            pr_project_id: prProjectID,
-            client_service_id: clientServiceID,
-            allowable_bill: false,
-            tracking: {
-                type: 'duration',
-                date: '',
-                duration: duration
-            }
-        }
-        
-        //for development: preJSON to JSON
-        const postJSON = JSON.stringify(preJSON); 
-        
+        //new function: check if timesheets are according specification
+        const data = stringifyTimetrackings(timesheets);
         const initObject = {
-            method: 'POST', headers: reqHeader, body: postJSON
+            method: 'POST', body: data, headers: reqHeader
         };
 
         fetch(url, initObject)
