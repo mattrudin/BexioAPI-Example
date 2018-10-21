@@ -105,12 +105,46 @@ class BexioAPI {
         }
     }
 
-    postTimetracking = (resource) => { 
-        if (typeof resource === 'string') {
-            //POST data
-        } else {
-            alert('Error: Please provide a string into this function.')
+    collectTimetrackings(...timesheets) {
+        //for fututre use: collects all timetrackings and converts it into a json object
+    }
+
+    postTimetracking = (userID, prProjectID, clientServiceID, duration) => { //resource is hardcoded as "timesheet"; scope: monitoring_edit
+        const { accessToken, organisation } = this.data;
+        const baseUrl = 'https://office.bexio.com/api2.php/';
+        const url = `${baseUrl}${organisation}/timesheet`;
+        const reqHeader = new Headers({
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        });
+        
+        //for development: single pre JSON
+        const preJSON = {
+            user_id: userID,
+            pr_project_id: prProjectID,
+            client_service_id: clientServiceID,
+            allowable_bill: false,
+            tracking: {
+                type: 'duration',
+                date: '',
+                duration: duration
+            }
         }
+        
+        //for development: preJSON to JSON
+        const postJSON = JSON.stringify(preJSON); 
+        
+        const initObject = {
+            method: 'POST', headers: reqHeader, body: postJSON
+        };
+
+        fetch(url, initObject)
+            .then( response => {
+                return alert('Timesheets successfully uploaded!', response.json());
+            })
+            .catch(err => {
+                alert("Error: Could not send data!", err);
+            });
     }
 }
 
