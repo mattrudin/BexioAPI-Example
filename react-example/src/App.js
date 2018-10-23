@@ -26,19 +26,22 @@ class App extends Component {
 
   handleClick() {
     const data = Bexio.getData('users');
-    this.setState({
-      data,
-    });
+    this.setState(
+      {
+        data,
+      },
+      () => console.log(this.state.data)
+    );
   }
 
   render() {
     return (
       <div className="App">
         <h1>Test example</h1>
-        <button type="button" onClick={Bexio.goLogin}>
+        <button type="button" onClick={() => Bexio.login()}>
           Login to Bexio
         </button>
-        <button type="button" onClick={() => this.handleClick}>
+        <button type="button" onClick={() => this.handleClick()}>
           Get Users
         </button>
       </div>

@@ -12,26 +12,33 @@ export function resourceReducer(resource) {
   switch (resource) {
     // case descriptions are according resources page, name column --> https://docs.bexio.com/resources/
     case 'users':
-      return (resourceText = 'user');
+      resourceText = 'user';
+      return resourceText;
     case 'timesheets':
-      return (resourceText = 'timesheet');
+      resourceText = 'timesheet';
+      return resourceText;
     case 'projects':
-      return (resourceText = 'pr_project');
+      resourceText = 'pr_project';
+      return resourceText;
     case 'articles':
-      return (resourceText = 'article');
+      resourceText = 'article';
+      return resourceText;
     case 'tasks':
-      return (resourceText = 'task');
+      resourceText = 'task';
+      return resourceText;
     case 'contacts':
-      return (resourceText = 'contact');
+      resourceText = 'contact';
+      return resourceText;
     case 'business activities':
-      return (resourceText = 'client_service');
+      resourceText = 'client_service';
+      return resourceText;
     default:
       alert('Unknown method');
   }
 }
 
 export function stringifyTimetrackings(timesheets) {
-  const collectedJSONdata = [];
+  let collectedJSONdata = [];
   if (Array.isArray(timesheets)) {
     collectedJSONdata = [...JSON.stringify(timesheets)];
   } else {

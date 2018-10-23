@@ -67,8 +67,9 @@ class BexioAPI {
     }
 
     getData = (resource) => {
-        const data = [];
-        if (typeof resource === 'string') {
+        let data;
+        //async - await
+        if (typeof resource === 'string' && !data) {
             const { accessToken, organisation } = this.data;
             const baseUrl = 'https://office.bexio.com/api2.php/';
             const resourceText = resourceReducer(resource);
@@ -80,20 +81,25 @@ class BexioAPI {
             const initObject = {
                 method: 'GET', headers: reqHeader,
             };
-    
+            
+            console.log('fetching ahead');
+
             fetch(url, initObject)
                 .then( response => {
                     return response.json();
                 })
                 .then( receivedData => {
-                    data = [...receivedData];
+                    this.data.data = receivedData; //for developing purpose only
                 })
+                //.then(() => console.log(this.data.data)) for developing purpose only
                 .catch(err => {
                     alert("Error: Could not retrive data!", err);
                 });
         } else {
             alert('Error: Please provide a string into this function.')
         }
+
+        //then...
         return data ? data : alert('Error: Data was not received.')
     }
 
