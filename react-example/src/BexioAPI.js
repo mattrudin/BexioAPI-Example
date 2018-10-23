@@ -1,5 +1,5 @@
 import SetInterval from 'set-interval';
-import { generateState, resourceReducer, stringifyTimetrackings } from './utilities';
+import { generateState, resourceReducer } from './utilities';
 
 class BexioAPI {
     constructor({clientID, clientSecret, redirectURI, scopes}) {
@@ -111,7 +111,7 @@ class BexioAPI {
                 'Authorization': `Bearer ${accessToken}`
             });
             //new function: check if timesheets are according specification
-            const data = stringifyTimetrackings(timesheets);
+            const data = JSON.stringify(timesheets);
             const initObject = {
                 method: 'POST', body: data, headers: reqHeader
             };

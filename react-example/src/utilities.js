@@ -36,13 +36,3 @@ export function resourceReducer(resource) {
       alert('Unknown method');
   }
 }
-
-export function stringifyTimetrackings(timesheets) {
-  let collectedJSONdata = [];
-  if (Array.isArray(timesheets)) {
-    collectedJSONdata = [...JSON.stringify(timesheets)];
-  } else {
-    alert('Error: Please provide a array into this function.');
-  }
-  return collectedJSONdata;
-}

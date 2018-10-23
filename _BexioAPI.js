@@ -67,7 +67,7 @@ class BexioAPI {
     }
 
     getData = (resource) => {
-        const data = [];
+        let data = [];
         if (typeof resource === 'string') {
             const { accessToken, organisation } = this.data;
             const baseUrl = 'https://office.bexio.com/api2.php/';
