@@ -30,7 +30,7 @@ export function resourceReducer(resource) {
     }
 }
 
-export stringifyTimetrackings(timesheets) {
+export function stringifyTimetrackings(timesheets) {
     const collectedJSONdata = [];
     if (Array.isArray(timesheets)) {
         collectedJSONdata = [...JSON.stringify(timesheets)];
