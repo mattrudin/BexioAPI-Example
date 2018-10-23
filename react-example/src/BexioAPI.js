@@ -13,7 +13,7 @@ class BexioAPI {
     }
 
     callback = () => {
-        SetInterval.start(this.getAccess, 1000,'callback');
+        SetInterval.start(this.getAccess, 500,'callback');
     }
 
     login = () => {
@@ -66,9 +66,8 @@ class BexioAPI {
             });
     }
 
-    getData = (resource) => {
+    async getData(resource) {
         let data;
-        //async - await
         if (typeof resource === 'string' && !data) {
             const { accessToken, organisation } = this.data;
             const baseUrl = 'https://office.bexio.com/api2.php/';
@@ -81,26 +80,17 @@ class BexioAPI {
             const initObject = {
                 method: 'GET', headers: reqHeader,
             };
-            
-            console.log('fetching ahead');
 
-            fetch(url, initObject)
-                .then( response => {
-                    return response.json();
-                })
-                .then( receivedData => {
-                    this.data.data = receivedData; //for developing purpose only
-                })
-                //.then(() => console.log(this.data.data)) for developing purpose only
-                .catch(err => {
-                    alert("Error: Could not retrive data!", err);
-                });
+            try{
+                data = await fetch(url, initObject).then(response => response.json());
+            } catch (error) {
+                alert('Error:', error)
+            }
         } else {
             alert('Error: Please provide a string into this function.')
         }
 
-        //then...
-        return data ? data : alert('Error: Data was not received.')
+        return data;
     }
 
     postData = (resource) => {
@@ -112,26 +102,30 @@ class BexioAPI {
     }
 
     postTimetracking = (timesheets) => { //resource is hardcoded as "timesheet"; scope: monitoring_edit
-        const { accessToken, organisation } = this.data;
-        const baseUrl = 'https://office.bexio.com/api2.php/';
-        const url = `${baseUrl}${organisation}/timesheet`;
-        const reqHeader = new Headers({
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-        });
-        //new function: check if timesheets are according specification
-        const data = stringifyTimetrackings(timesheets);
-        const initObject = {
-            method: 'POST', body: data, headers: reqHeader
-        };
-
-        fetch(url, initObject)
-            .then( response => {
-                return alert('Timesheets successfully uploaded!', response.json());
-            })
-            .catch(err => {
-                alert("Error: Could not send data!", err);
+        if (Object.isArray(timesheets)) {
+            const { accessToken, organisation } = this.data;
+            const baseUrl = 'https://office.bexio.com/api2.php/';
+            const url = `${baseUrl}${organisation}/timesheet`;
+            const reqHeader = new Headers({
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
             });
+            //new function: check if timesheets are according specification
+            const data = stringifyTimetrackings(timesheets);
+            const initObject = {
+                method: 'POST', body: data, headers: reqHeader
+            };
+    
+            fetch(url, initObject)
+                .then( response => {
+                    return alert('Timesheets successfully uploaded!', response.json());
+                })
+                .catch(err => {
+                    alert("Error: Could not send data!", err);
+                });
+        } else {
+            alert('Error: Please provide an array into this function.');
+        }
     }
 }
 

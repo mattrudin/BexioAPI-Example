@@ -24,14 +24,15 @@ class App extends Component {
     Bexio.callback();
   }
 
-  handleClick() {
-    const data = Bexio.getData('users');
-    this.setState(
-      {
-        data,
-      },
-      () => console.log(this.state.data)
-    );
+  async handleClick() {
+    const data = await Bexio.getData('users');
+    this.setState({
+      data,
+    });
+  }
+
+  handleConsoleLog() {
+    console.log(this.state.data);
   }
 
   render() {
@@ -43,6 +44,9 @@ class App extends Component {
         </button>
         <button type="button" onClick={() => this.handleClick()}>
           Get Users
+        </button>
+        <button type="button" onClick={() => this.handleConsoleLog()}>
+          Log Users
         </button>
       </div>
     );
