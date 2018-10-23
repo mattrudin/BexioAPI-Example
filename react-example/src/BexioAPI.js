@@ -1,5 +1,5 @@
 import SetInterval from 'set-interval';
-import { generateState, resourceReducer } from './utilities';
+import { generateState, resourceReducer, checkTimesheets } from './utilities';
 
 class BexioAPI {
     constructor({clientID, clientSecret, redirectURI, scopes}) {
@@ -102,7 +102,7 @@ class BexioAPI {
     }
 
     postTimetracking = (timesheets) => { //resource is hardcoded as "timesheet"; scope: monitoring_edit
-        if (Object.isArray(timesheets)) {
+        if (Object.isArray(timesheets) && checkTimesheets(timesheets)) {
             const { accessToken, organisation } = this.data;
             const baseUrl = 'https://office.bexio.com/api2.php/';
             const url = `${baseUrl}${organisation}/timesheet`;
