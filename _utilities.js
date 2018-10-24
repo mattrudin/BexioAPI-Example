@@ -5,37 +5,49 @@ export function generateState() {
     const array = UintArray.map(x => validChars.charCodeAt(x % validChars.length));
     const randomState = String.fromCharCode.apply(null, array);
     return randomState;
-}
-
-export function resourceReducer(resource) {
+  }
+  
+  export function resourceReducer(resource) {
     let resourceText;
-    switch(resource) {
-        //case descriptions are according resources page, name column --> https://docs.bexio.com/resources/
-        case 'users':
-            return resourceText = 'user';
-        case 'timesheets':
-            return resourceText = 'timesheet';
-        case 'projects':
-            return resourceText = 'pr_project';
-        case 'articles':
-            return resourceText = 'article';
-        case 'tasks':
-            return resourceText = 'task';
-        case 'contacts':
-            return resourceText = 'contact';
-        case 'business activities':
-            return resourceText = 'client_service';
-        default:
-            alert('Unknown method');
+    switch (resource) {
+      // case descriptions are according resources page, name column --> https://docs.bexio.com/resources/
+      case 'users':
+        resourceText = 'user';
+        return resourceText;
+      case 'timesheets':
+        resourceText = 'timesheet';
+        return resourceText;
+      case 'projects':
+        resourceText = 'pr_project';
+        return resourceText;
+      case 'articles':
+        resourceText = 'article';
+        return resourceText;
+      case 'tasks':
+        resourceText = 'task';
+        return resourceText;
+      case 'contacts':
+        resourceText = 'contact';
+        return resourceText;
+      case 'business activities':
+        resourceText = 'client_service';
+        return resourceText;
+      default:
+        alert('Unknown method');
     }
-}
-
-export function stringifyTimetrackings(timesheets) {
-    const collectedJSONdata = [];
-    if (Array.isArray(timesheets)) {
-        collectedJSONdata = [...JSON.stringify(timesheets)];
+  }
+  
+  export function checkTimesheets(timesheets) {
+    const bill = timesheets.find(timesheet => timesheet.allowable_bill === undefined);
+    const client = timesheets.find(timesheet => timesheet.client_service_id === undefined);
+    const track = timesheets.find(timesheet => timesheet.tracking === undefined);
+    const user = timesheets.find(timesheet => timesheet.user_id === undefined);
+    let isVerified;
+    if (bill || client || track || user) {
+      isVerified = false;
     } else {
-        alert('Error: Please provide a array into this function.')
+      isVerified = true;
     }
-    return collectedJSONdata;
-}
+    return isVerified;
+  }
+  
