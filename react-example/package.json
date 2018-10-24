@@ -11,7 +11,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest --watch",
     "test:expect": "jest --config ./other/jest-expect/jest.config.js --watch",
     "eject": "react-scripts eject",
     "dev": "parcel src/index.html"

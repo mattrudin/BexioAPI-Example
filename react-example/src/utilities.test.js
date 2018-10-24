@@ -1,4 +1,4 @@
-import { resourceReducer, checkTimesheets } from '../src/utilities';
+import { resourceReducer, checkTimesheets } from './utilities';
 
 test('input and output according specification', () => {
   expect(resourceReducer('users')).toBe('user');
@@ -11,7 +11,7 @@ test('input and output according specification', () => {
   expect(resourceReducer('abc')).toBe(undefined);
 });
 
-test('input shall be an array with objects; output shall be true or false', () => {
+describe('Timesheet check', () => {
   const safeInput = [
     {
       allowable_bill: true,
@@ -52,10 +52,19 @@ test('input shall be an array with objects; output shall be true or false', () =
       tracking: true,
     },
   ];
+  test('output shall be true or false', () => {
+    expect(checkTimesheets(safeInput)).toBe(true);
+    expect(checkTimesheets(missingInputBill)).toBe(false);
+    expect(checkTimesheets(missingInputClient)).toBe(false);
+    expect(checkTimesheets(missingInputTracking)).toBe(false);
+    expect(checkTimesheets(missingInputUser)).toBe(false);
+  });
 
-  expect(checkTimesheets(safeInput)).toBe(true);
-  expect(checkTimesheets(missingInputBill)).toBe(false);
-  expect(checkTimesheets(missingInputClient)).toBe(false);
-  expect(checkTimesheets(missingInputTracking)).toBe(false);
-  expect(checkTimesheets(missingInputUser)).toBe(false);
+  test('output shall be truthy or falsy', () => {
+    expect(checkTimesheets(safeInput)).toBeTruthy();
+    expect(checkTimesheets(missingInputBill)).toBeFalsy();
+    expect(checkTimesheets(missingInputClient)).toBeFalsy();
+    expect(checkTimesheets(missingInputTracking)).toBeFalsy();
+    expect(checkTimesheets(missingInputUser)).toBeFalsy();
+  });
 });
