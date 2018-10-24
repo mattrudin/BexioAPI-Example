@@ -33,7 +33,8 @@ export function resourceReducer(resource) {
       resourceText = 'client_service';
       return resourceText;
     default:
-      alert('Unknown method');
+      console.log('resourceReducer: Unknown method');
+      return resourceText;
   }
 }
 
