@@ -37,17 +37,3 @@ export function resourceReducer(resource) {
       return resourceText;
   }
 }
-
-export function checkTimesheets(timesheets) {
-  const bill = timesheets.find(timesheet => timesheet.allowable_bill === undefined);
-  const client = timesheets.find(timesheet => timesheet.client_service_id === undefined);
-  const track = timesheets.find(timesheet => timesheet.tracking === undefined);
-  const user = timesheets.find(timesheet => timesheet.user_id === undefined);
-  let isVerified;
-  if (bill || client || track || user) {
-    isVerified = false;
-  } else {
-    isVerified = true;
-  }
-  return isVerified;
-}
