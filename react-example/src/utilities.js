@@ -37,3 +37,9 @@ export function resourceReducer(resource) {
       return resourceText;
   }
 }
+
+export function checkTimesheet(timesheet) {
+  const keys = Object.keys(timesheet);
+  const isVerified = keys.includes('user_id', 'client_service_id', 'allowable_bill', 'tracking');
+  return isVerified;
+}
