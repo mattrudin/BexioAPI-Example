@@ -1,4 +1,4 @@
-import { resourceReducer, checkTimesheets } from './utilities';
+import { resourceReducer, checkTimesheet } from './utilities';
 
 test('input and output according specification', () => {
   expect(resourceReducer('users')).toBe('user');
@@ -11,60 +11,30 @@ test('input and output according specification', () => {
   expect(resourceReducer('abc')).toBe(undefined);
 });
 
-describe('Timesheet check', () => {
-  const safeInput = [
-    {
-      allowable_bill: true,
-      client_service_id: 1,
-      tracking: true,
-      user_id: 1,
-    },
-  ];
+const safeObject = {
+  user_id: 'value',
+  client_service_id: 'value',
+  allowable_bill: false,
+  tracking: {
+    type: 'duration',
+    date: 'value',
+    duration: 'value',
+  },
+  pr_project_id: 'value',
+};
 
-  const missingInputBill = [
-    {
-      client_service_id: 1,
-      tracking: true,
-      user_id: 1,
-    },
-  ];
+const unsafeObject = {
+  client_service_id: 'value',
+  allowable_bill: false,
+  tracking: {
+    type: 'duration',
+    date: 'value',
+    duration: 'value',
+  },
+  pr_project_id: 'value',
+};
 
-  const missingInputClient = [
-    {
-      allowable_bill: true,
-      tracking: true,
-      user_id: 1,
-    },
-  ];
-
-  const missingInputTracking = [
-    {
-      allowable_bill: true,
-      client_service_id: 1,
-      user_id: 1,
-    },
-  ];
-
-  const missingInputUser = [
-    {
-      allowable_bill: true,
-      client_service_id: 1,
-      tracking: true,
-    },
-  ];
-  test('output shall be true or false', () => {
-    expect(checkTimesheets(safeInput)).toBe(true);
-    expect(checkTimesheets(missingInputBill)).toBe(false);
-    expect(checkTimesheets(missingInputClient)).toBe(false);
-    expect(checkTimesheets(missingInputTracking)).toBe(false);
-    expect(checkTimesheets(missingInputUser)).toBe(false);
-  });
-
-  test('output shall be truthy or falsy', () => {
-    expect(checkTimesheets(safeInput)).toBeTruthy();
-    expect(checkTimesheets(missingInputBill)).toBeFalsy();
-    expect(checkTimesheets(missingInputClient)).toBeFalsy();
-    expect(checkTimesheets(missingInputTracking)).toBeFalsy();
-    expect(checkTimesheets(missingInputUser)).toBeFalsy();
-  });
+test('input shall be object with given keys', () => {
+  expect(checkTimesheet(safeObject)).toBeTruthy();
+  expect(checkTimesheet(unsafeObject)).toBeFalsy();
 });
