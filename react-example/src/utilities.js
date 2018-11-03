@@ -7,6 +7,7 @@ export function generateState() {
   return randomState;
 }
 
+//Functions for comparison the data
 export function resourceReducer(resource) {
   let resourceText;
   switch (resource) {
@@ -30,7 +31,7 @@ export function resourceReducer(resource) {
       resourceText = 'contact';
       return resourceText;
     case 'business activities':
-      resourceText = 'client_service';
+      returnresourceText = 'client_service';
       return resourceText;
     default:
       console.log('resourceReducer: Unknown method');
@@ -38,8 +39,36 @@ export function resourceReducer(resource) {
   }
 }
 
-export function checkTimesheet(timesheet) {
-  const keys = Object.keys(timesheet);
-  const isVerified = keys.includes('user_id', 'client_service_id', 'allowable_bill', 'tracking');
-  return isVerified;
+export function postDataReducer(resource, data) {
+  let isVerified;
+  switch (resource) {
+    case 'timesheets':
+      isVerified = checkTimesheet(data);
+      return isVerified;
+    case 'projects':
+      isVerified = checkProject(data);
+      return isVerified;
+}
+
+//Functions for checking the data
+export function checkTimesheet(timesheet) { 
+  if(typeof timesheet === 'object') {
+    const keys = Object.keys(timesheet);
+    const isVerified = keys.includes('user_id', 'client_service_id', 'allowable_bill', 'tracking');
+    return isVerified;
+  }
+}
+
+export function checkProject(project) { 
+  if(typeof project === 'object') {
+    const keys = Object.keys(project);
+    const isVerified = keys.includes(
+      'contact_id',
+      'name',
+      'pr_project_type_id',
+      'pr_state_id',
+      'user_id'
+    );
+    return isVerified;
+  }
 }
