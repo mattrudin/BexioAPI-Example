@@ -7,7 +7,7 @@ export function generateState() {
   return randomState;
 }
 
-//Functions for comparison the data
+// Functions for comparison the data
 export function resourceReducer(resource) {
   let resourceText;
   switch (resource) {
@@ -57,68 +57,62 @@ export function postDataReducer(resource, data) {
     case 'business activities':
       isVerified = checkClientService(data);
       return isVerified;
+  }
 }
 
-//Functions for checking the data
-export function checkTimesheet(timesheet) { 
-  if(typeof timesheet === 'object') {
-    const keys = Object.keys(timesheet);
-    const isVerified = keys.includes(
-      'user_id',
-      'client_service_id',
-      'allowable_bill',
-      'tracking'
-    );
+// Functions for checking the data
+export function checkTimesheet(timesheet) {
+  if (typeof timesheet === 'object') {
+    const isUserId = timesheet.hasOwnProperty('user_id');
+    const isClientServiceId = timesheet.hasOwnProperty('client_service_id');
+    const isAllowableBill = timesheet.hasOwnProperty('allowable_bill');
+    const isTracking = timesheet.hasOwnProperty('tracking');
+    const propertyNumber = isUserId + isClientServiceId + isAllowableBill + isTracking;
+    const isVerified = propertyNumber === 4;
     return isVerified;
   }
 }
 
-export function checkProject(project) { 
-  if(typeof project === 'object') {
-    const keys = Object.keys(project);
-    const isVerified = keys.includes(
-      'contact_id',
-      'name',
-      'pr_project_type_id',
-      'pr_state_id',
-      'user_id'
-    );
+export function checkProject(project) {
+  if (typeof project === 'object') {
+    const isContactId = project.hasOwnProperty('contact_id');
+    const isName = project.hasOwnProperty('name');
+    const isPrProjectTypeId = project.hasOwnProperty('pr_project_type_id');
+    const isPrStateId = project.hasOwnProperty('pr_state_id');
+    const isUserId = project.hasOwnProperty('user_id');
+    const propertyNumber = isContactId + isName + isPrProjectTypeId + isPrStateId + isUserId;
+    const isVerified = propertyNumber === 5;
     return isVerified;
   }
 }
 
-export function checkTask(task) { 
-  if(typeof task === 'object') {
-    const keys = Object.keys(task);
-    const isVerified = keys.includes(
-      'remember_time_id',
-      'remember_type_id',
-      'subject',
-      'user_id'
-    );
+export function checkTask(task) {
+  if (typeof task === 'object') {
+    const isSubject = task.hasOwnProperty('subject');
+    const isUserId = task.hasOwnProperty('user_id');
+    const propertyNumber = isSubject + isUserId;
+    const isVerified = propertyNumber === 2;
     return isVerified;
   }
 }
 
-export function checkContact(contact) { 
-  if(typeof contact === 'object') {
-    const keys = Object.keys(contact);
-    const isVerified = keys.includes(
-      'contact_type_id',
-      'name_1',
-      'owner_id',
-      'user_id'
-    );
+export function checkContact(contact) {
+  if (typeof contact === 'object') {
+    const isContactTypeId = contact.hasOwnProperty('contact_type_id');
+    const isName = contact.hasOwnProperty('name_1');
+    const isOwner = contact.hasOwnProperty('owner_id');
+    const isUser = contact.hasOwnProperty('user_id');
+    const propertyNumber = isContactTypeId + isName + isOwner + isUser;
+    const isVerified = propertyNumber === 4;
     return isVerified;
   }
 }
 
-export function checkClientService(service) { 
-  if(typeof service === 'object') {
-    const keys = Object.keys(service);
-    const isVerified = keys.includes(
-      'name'
-    );
+export function checkClientService(service) {
+  if (typeof service === 'object') {
+    const isName = service.hasOwnProperty('name');
+    const propertyNumber = Number(isName);
+    const isVerified = propertyNumber === 1;
     return isVerified;
   }
 }
