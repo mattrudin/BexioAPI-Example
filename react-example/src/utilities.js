@@ -51,6 +51,9 @@ export function postDataReducer(resource, data) {
     case 'tasks':
       isVerified = checkTask(data);
       return isVerified;
+    case 'contacts':
+      isVerified = checkContact(data);
+      return isVerified;
 }
 
 //Functions for checking the data
@@ -88,6 +91,19 @@ export function checkTask(task) {
       'remember_time_id',
       'remember_type_id',
       'subject',
+      'user_id'
+    );
+    return isVerified;
+  }
+}
+
+export function checkContact(contact) { 
+  if(typeof contact === 'object') {
+    const keys = Object.keys(contact);
+    const isVerified = keys.includes(
+      'contact_type_id',
+      'name_1',
+      'owner_id',
       'user_id'
     );
     return isVerified;
