@@ -31,7 +31,7 @@ export function resourceReducer(resource) {
       resourceText = 'contact';
       return resourceText;
     case 'business activities':
-      returnresourceText = 'client_service';
+      resourceText = 'client_service';
       return resourceText;
     default:
       console.log('resourceReducer: Unknown method');
@@ -53,6 +53,9 @@ export function postDataReducer(resource, data) {
       return isVerified;
     case 'contacts':
       isVerified = checkContact(data);
+      return isVerified;
+    case 'business activities':
+      isVerified = checkClientService(data);
       return isVerified;
 }
 
@@ -105,6 +108,16 @@ export function checkContact(contact) {
       'name_1',
       'owner_id',
       'user_id'
+    );
+    return isVerified;
+  }
+}
+
+export function checkClientService(service) { 
+  if(typeof service === 'object') {
+    const keys = Object.keys(service);
+    const isVerified = keys.includes(
+      'name'
     );
     return isVerified;
   }
