@@ -48,13 +48,21 @@ export function postDataReducer(resource, data) {
     case 'projects':
       isVerified = checkProject(data);
       return isVerified;
+    case 'tasks':
+      isVerified = checkTask(data);
+      return isVerified;
 }
 
 //Functions for checking the data
 export function checkTimesheet(timesheet) { 
   if(typeof timesheet === 'object') {
     const keys = Object.keys(timesheet);
-    const isVerified = keys.includes('user_id', 'client_service_id', 'allowable_bill', 'tracking');
+    const isVerified = keys.includes(
+      'user_id',
+      'client_service_id',
+      'allowable_bill',
+      'tracking'
+    );
     return isVerified;
   }
 }
@@ -67,6 +75,19 @@ export function checkProject(project) {
       'name',
       'pr_project_type_id',
       'pr_state_id',
+      'user_id'
+    );
+    return isVerified;
+  }
+}
+
+export function checkTask(task) { 
+  if(typeof task === 'object') {
+    const keys = Object.keys(task);
+    const isVerified = keys.includes(
+      'remember_time_id',
+      'remember_type_id',
+      'subject',
       'user_id'
     );
     return isVerified;
