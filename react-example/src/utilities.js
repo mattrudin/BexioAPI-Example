@@ -7,59 +7,6 @@ export function generateState() {
   return randomState;
 }
 
-// Functions for comparison the data
-export function resourceReducer(resource) {
-  let resourceText;
-  switch (resource) {
-    // case descriptions are according resources page, name column --> https://docs.bexio.com/resources/
-    case 'users':
-      resourceText = 'user';
-      return resourceText;
-    case 'timesheets':
-      resourceText = 'timesheet';
-      return resourceText;
-    case 'projects':
-      resourceText = 'pr_project';
-      return resourceText;
-    case 'articles':
-      resourceText = 'article';
-      return resourceText;
-    case 'tasks':
-      resourceText = 'task';
-      return resourceText;
-    case 'contacts':
-      resourceText = 'contact';
-      return resourceText;
-    case 'business activities':
-      resourceText = 'client_service';
-      return resourceText;
-    default:
-      console.log('resourceReducer: Unknown method');
-      return resourceText;
-  }
-}
-
-export function postDataReducer(resource, data) {
-  let isVerified;
-  switch (resource) {
-    case 'timesheets':
-      isVerified = checkTimesheet(data);
-      return isVerified;
-    case 'projects':
-      isVerified = checkProject(data);
-      return isVerified;
-    case 'tasks':
-      isVerified = checkTask(data);
-      return isVerified;
-    case 'contacts':
-      isVerified = checkContact(data);
-      return isVerified;
-    case 'business activities':
-      isVerified = checkClientService(data);
-      return isVerified;
-  }
-}
-
 // Functions for checking the data
 export function checkTimesheet(timesheet) {
   if (typeof timesheet === 'object') {
@@ -114,5 +61,63 @@ export function checkClientService(service) {
     const propertyNumber = Number(isName);
     const isVerified = propertyNumber === 1;
     return isVerified;
+  }
+}
+
+// Functions for comparison the data
+export function resourceReducer(resource) {
+  let resourceText;
+  switch (resource) {
+    // case descriptions are according resources page, name column --> https://docs.bexio.com/resources/
+    case 'users':
+      resourceText = 'user';
+      return resourceText;
+    case 'timesheets':
+      resourceText = 'timesheet';
+      return resourceText;
+    case 'projects':
+      resourceText = 'pr_project';
+      return resourceText;
+    case 'articles':
+      resourceText = 'article';
+      return resourceText;
+    case 'tasks':
+      resourceText = 'task';
+      return resourceText;
+    case 'contacts':
+      resourceText = 'contact';
+      return resourceText;
+    case 'business activities':
+      resourceText = 'client_service';
+      return resourceText;
+    default:
+      console.log('resourceReducer: Unknown method');
+      resourceText = false;
+      return resourceText;
+  }
+}
+
+export function postDataReducer(resource, data) {
+  let isVerified;
+  switch (resource) {
+    case 'timesheets':
+      isVerified = checkTimesheet(data);
+      return isVerified;
+    case 'projects':
+      isVerified = checkProject(data);
+      return isVerified;
+    case 'tasks':
+      isVerified = checkTask(data);
+      return isVerified;
+    case 'contacts':
+      isVerified = checkContact(data);
+      return isVerified;
+    case 'business activities':
+      isVerified = checkClientService(data);
+      return isVerified;
+    default:
+      console.log('Unknown resource');
+      isVerified = false;
+      return isVerified;
   }
 }
